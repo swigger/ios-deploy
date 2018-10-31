@@ -1182,37 +1182,38 @@ void timeout_callback(CFRunLoopTimerRef timer, void *info) {
 }
 
 void usage(const char* app) {
-    NSLog(
-        @"Usage: %@ [OPTION]...\n"
-        @"  -d, --debug                  launch the app in lldb after installation\n"
-        @"  -i, --id <device_id>         the id of the device to connect to\n"
-        @"  -c, --detect                 only detect if the device is connected\n"
-        @"  -b, --bundle <bundle.app>    the path to the app bundle to be installed\n"
-        @"  -a, --args <args>            command line arguments to pass to the app when launching it\n"
-        @"  -t, --timeout <timeout>      number of seconds to wait for a device to be connected\n"
-        @"  -u, --unbuffered             don't buffer stdout\n"
-        @"  -n, --nostart                do not start the app when debugging\n"
-        @"  -N, --nolldb                 start debugserver only. do not run lldb\n"
-        @"  -I, --noninteractive         start in non interactive mode (quit when app crashes or exits)\n"
-        @"  -L, --justlaunch             just launch the app and exit lldb\n"
-        @"  -v, --verbose                enable verbose output\n"
-        @"  -m, --noinstall              directly start debugging without app install (-d not required)\n"
-        @"  -p, --port <number>          port used for device, default: dynamic\n"
-        @"  -r, --uninstall              uninstall the app before install (do not use with -m; app cache and data are cleared) \n"
-        @"  -9, --uninstall_only         uninstall the app ONLY. Use only with -1 <bundle_id> \n"
-        @"  -1, --bundle_id <bundle id>  specify bundle id for list and upload\n"
-        @"  -l, --list                   list files\n"
-        @"  -o, --upload <file>          upload file\n"
-        @"  -w, --download               download app tree\n"
-        @"  -2, --to <target pathname>   use together with up/download file/tree. specify target\n"
-        @"  -D, --mkdir <dir>            make directory on device\n"
-        @"  -R, --rm <path>              remove file or directory on device (directories must be empty)\n"
-        @"  -V, --version                print the executable version \n"
-        @"  -e, --exists                 check if the app with given bundle_id is installed or not \n"
-        @"  -B, --list_bundle_id         list bundle_id \n"
-        @"  -W, --no-wifi                ignore wifi devices\n"
-        @"  --detect_deadlocks <sec>     start printing backtraces for all threads periodically after specific amount of seconds\n",
-        [NSString stringWithUTF8String:app]);
+	const char * usage_ = ""
+        "Usage: %s [OPTION]...\n"
+        "  -d, --debug                  launch the app in lldb after installation\n"
+        "  -i, --id <device_id>         the id of the device to connect to\n"
+        "  -c, --detect                 only detect if the device is connected\n"
+        "  -b, --bundle <bundle.app>    the path to the app bundle to be installed\n"
+        "  -a, --args <args>            command line arguments to pass to the app when launching it\n"
+        "  -t, --timeout <timeout>      number of seconds to wait for a device to be connected\n"
+        "  -u, --unbuffered             don't buffer stdout\n"
+        "  -n, --nostart                do not start the app when debugging\n"
+        "  -N, --nolldb                 start debugserver only. do not run lldb\n"
+        "  -I, --noninteractive         start in non interactive mode (quit when app crashes or exits)\n"
+        "  -L, --justlaunch             just launch the app and exit lldb\n"
+        "  -v, --verbose                enable verbose output\n"
+        "  -m, --noinstall              directly start debugging without app install (-d not required)\n"
+        "  -p, --port <number>          port used for device, default: dynamic\n"
+        "  -r, --uninstall              uninstall the app before install (do not use with -m; app cache and data are cleared) \n"
+        "  -9, --uninstall_only         uninstall the app ONLY. Use only with -1 <bundle_id> \n"
+        "  -1, --bundle_id <bundle id>  specify bundle id for list and upload\n"
+        "  -l, --list                   list files\n"
+        "  -o, --upload <file>          upload file\n"
+        "  -w, --download               download app tree\n"
+        "  -2, --to <target pathname>   use together with up/download file/tree. specify target\n"
+        "  -D, --mkdir <dir>            make directory on device\n"
+        "  -R, --rm <path>              remove file or directory on device (directories must be empty)\n"
+        "  -V, --version                print the executable version \n"
+        "  -e, --exists                 check if the app with given bundle_id is installed or not \n"
+        "  -B, --list_bundle_id         list bundle_id \n"
+        "  -W, --no-wifi                ignore wifi devices\n"
+        "  --detect_deadlocks <sec>     start printing backtraces for all threads periodically after specific amount of seconds\n"
+		"  --helper_script <path.py>    a helper script to auto debugging after launch. implies stop-at-entry disable-aslr\n";
+	fprintf(stderr, usage_, app);
 }
 
 void show_version() {
@@ -1260,6 +1261,7 @@ int main(int argc, char *argv[]) {
         { "list_bundle_id", no_argument, NULL, 'B'},
         { "no-wifi", no_argument, NULL, 'W'},
         { "detect_deadlocks", required_argument, NULL, 1000 },
+		{ "helper_script", required_argument, NULL, 2000},
         { NULL, 0, NULL, 0 },
     };
     int ch;
@@ -1370,6 +1372,9 @@ int main(int argc, char *argv[]) {
         case 1000:
             g_scopt.detectDeadlockTimeout = atoi(optarg);
             break;
+		case 2000:
+			g_scopt.helper_script = optarg;
+			break;
         default:
             usage(argv[0]);
             return exitcode_error;

@@ -135,6 +135,20 @@ void replaceAll(std::string& source, const std::string& from, const std::string&
 	source.swap(newString);
 }
 
+static void add_helper_script(string & content)
+{
+	if (!g_scopt.helper_script) return;
+	size_t pos = content.find("\nconnect");
+	if (pos == string::npos) return;
+	const char * sc = "\n"
+		"script {python_command}.g_opts.set_helper_script(\"{helper_script}\")\n"
+		"connect\n"
+		"run\n"
+		"script {python_command}.g_opts.wait_stop()\n"
+		"command script import \"{helper_script}\"\n";
+	replaceAll(content, "\nconnect\nrun\n", sc);
+}
+
 static void rm_prep_cmds_file(void)
 {
 	string prep_cmd_path = mkstrf("/tmp/ios-deploy/fruitstrap-lldb-prep-cmds-%u", (uint32_t)getpid());
@@ -158,6 +172,7 @@ void write_lldb_prep_cmds(AMDeviceRef device, CFURLRef disk_app_url)
 	nvs["detect_deadlock_timeout"] = mkstr(g_scopt.detectDeadlockTimeout);
 	nvs["device_container"] = mkstr(CFURLCopyFileSystemPath(device_container_url, kCFURLPOSIXPathStyle));
 	nvs["disk_container"] = mkstr(CFURLCopyFileSystemPath(disk_container_url, kCFURLPOSIXPathStyle));
+	nvs["helper_script"] = g_scopt.helper_script;
 	
 	string search_paths;
 	search_paths  = mkstrf("/usr \"%s/usr\" ", nvs["symbols_path"].c_str());
@@ -176,7 +191,9 @@ void write_lldb_prep_cmds(AMDeviceRef device, CFURLRef disk_app_url)
 	string pymodule = lldb_fruitstrap_module();
 	string prep_content = ::lldb_prep_cmds;
 	prep_content += g_scopt.extra_cmds;
+	add_helper_script(prep_content);
 
+	//TODO: replace with on-time pass.
 	for (auto & p : nvs)
 	{
 		string key;

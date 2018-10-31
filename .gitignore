@@ -5,6 +5,9 @@ _Frameworks/
 scripts/lldb.pyc
 ios-deploy/lldb.py.h
 .*.swp
+*.o
+makedir/ios-deploy
+makedir/ios-deploy.dbg
 
 xcuserdata/
 xcshareddata/
