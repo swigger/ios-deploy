@@ -17,7 +17,7 @@ class DeployDbg(object):
         self.helper_script = None
 
     # wait for target_st while state is in [target_st, other_st]
-    def wait_state(self, target_st, *other_st):
+    def _wait_state(self, target_st, *other_st):
         events = []
         state = (lldb.process.GetState() or lldb.eStateInvalid)
         rv = True
@@ -39,6 +39,12 @@ class DeployDbg(object):
             self.listener.AddEvent(event)
         return rv
 
+    def set_helper_script(self, sc):
+        self.helper_script = sc
+
+    def wait_stop(self):
+        self._wait_state(lldb.eStateStopped, lldb.eStateRunning, lldb.eStateStepping)
+
     def connect(self, debugger):
         print "connecting", self.connect_url
         error = lldb.SBError()
@@ -57,11 +63,8 @@ class DeployDbg(object):
 
         process = lldb.target.ConnectRemote(self.listener, self.connect_url, None, error)
         print "state::::", process.GetState()
-        self.wait_state(lldb.eStateConnected, lldb.eStateUnloaded, lldb.eStateInvalid)
+        self._wait_state(lldb.eStateConnected, lldb.eStateUnloaded, lldb.eStateInvalid)
         time.sleep(0.05)
-
-    def wait_stop(self):
-        self.wait_state(lldb.eStateStopped, lldb.eStateRunning, lldb.eStateStepping)
 
     def run(self, debugger, command):
         lldb.target.modules[0].SetPlatformFileSpec(lldb.SBFileSpec(self.device_app))
@@ -194,34 +197,6 @@ def run_command(debugger, command, result, internal_dict):
 def safequit_command(debugger, command, result, internal_dict):
     global g_opts
     g_opts.safequit()
-
-
-def check_stop_entry(debugger):
-    print lldb.process
-    bc = lldb.process.GetBroadcaster()
-    lis = lldb.SBListener('my stop listener')
-    rc = bc.AddListener(lis, lldb.SBProcess.eBroadcastBitStateChanged)
-    #rc is now granted events. should not be 0
-    print rc
-    event = lldb.SBEvent()
-    found_stop = False
-    time.sleep(0.1)
-    st = None
-    for _ in range(0,3):
-        st = lldb.process.GetState()
-        if st == lldb.eStateStopped:
-            break
-        if st == lldb.eStateRunning:
-            print "Running..."
-            break
-        if st == lldb.eStateAttaching or st == lldb.eStateLaunching:
-            pass
-        if not lis.WaitForEventForBroadcasterWithType(1, bc, lldb.SBProcess.eBroadcastBitStateChanged |
-                                                               lldb.SBProcess.eBroadcastBitInterrupt, event):
-            break
-    if st == lldb.eStateStopped:
-        debugger.HandleCommand("x/i $pc")
-    bc.RemoveListener(lis)
 
 
 def autoexit_command(debugger, command, result, internal_dict):

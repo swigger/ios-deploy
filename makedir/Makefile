@@ -30,5 +30,5 @@ $(EXE):$(OBJS)
 clean:
 	rm -f *.o .*.un~ $(EXE) $(EXE).dbg
 
-install:
-	cp ios-deploy ~/bin/
+install:$(EXE)
+	cp $(EXE) ~/bin/

@@ -27,20 +27,9 @@
  */
 
 const char* lldb_prep_no_cmds = "";
-
-const char* lldb_prep_interactive_cmds = "\
-    run\n\
-";
-
-const char* lldb_prep_noninteractive_justlaunch_cmds = "\
-    run\n\
-    safequit\n\
-";
-
-const char* lldb_prep_noninteractive_cmds = "\
-    run\n\
-    autoexit\n\
-";
+const char* lldb_prep_interactive_cmds = "run\n";
+const char* lldb_prep_noninteractive_justlaunch_cmds = "run\nsafequit\n";
+const char* lldb_prep_noninteractive_cmds = "run\nautoexit\n";
 
 bool found_device = false, debug = false, unbuffered = false, nostart = false, debugserver_only = false, detect_only = false, install = true, uninstall = false, no_wifi = false;
 bool command_only = false;
@@ -224,12 +213,25 @@ CFWriteStreamRef serverWriteStream = NULL;
 CFWriteStreamRef lldbWriteStream = NULL;
 
 int kill_ptree(pid_t root, int signum);
+
+static void on_conn_close(int who)
+{
+	static int closed = 0;
+	closed |= who;
+	if (closed == 3)
+	{
+		//both 2bits set. server & conn closed. quit.
+		exit(0);
+	}
+}
+
 void
 server_callback (CFSocketRef s, CFSocketCallBackType callbackType, CFDataRef address, const void *data, void *info)
 {
     ssize_t res;
 
     if (CFDataGetLength (data) == 0) {
+		on_conn_close(1);
         // close the socket on which we've got end-of-file, the server_socket.
         CFSocketInvalidate(s);
         CFRelease(s);
@@ -240,9 +242,10 @@ server_callback (CFSocketRef s, CFSocketCallBackType callbackType, CFDataRef add
 
 void lldb_callback(CFSocketRef s, CFSocketCallBackType callbackType, CFDataRef address, const void *data, void *info)
 {
-    //printf ("lldb: %s\n", CFDataGetBytePtr (data));
+	//fprintf(stderr, "lldb: %s\n", CFDataGetBytePtr (data));
 
     if (CFDataGetLength (data) == 0) {
+		on_conn_close(2);
         // close the socket on which we've got end-of-file, the lldb_socket.
         CFSocketInvalidate(s);
         CFRelease(s);

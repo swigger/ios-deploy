@@ -172,7 +172,7 @@ void write_lldb_prep_cmds(AMDeviceRef device, CFURLRef disk_app_url)
 	nvs["detect_deadlock_timeout"] = mkstr(g_scopt.detectDeadlockTimeout);
 	nvs["device_container"] = mkstr(CFURLCopyFileSystemPath(device_container_url, kCFURLPOSIXPathStyle));
 	nvs["disk_container"] = mkstr(CFURLCopyFileSystemPath(disk_container_url, kCFURLPOSIXPathStyle));
-	nvs["helper_script"] = g_scopt.helper_script;
+	nvs["helper_script"] = g_scopt.helper_script ? g_scopt.helper_script : "";
 	
 	string search_paths;
 	search_paths  = mkstrf("/usr \"%s/usr\" ", nvs["symbols_path"].c_str());
