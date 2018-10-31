@@ -180,7 +180,7 @@ void mount_developer_image(AMDeviceRef device) {
     } else if (result == 0xe8000076 /* already mounted */) {
         NSLogOut(@"[ 95%%] Developer disk image already mounted");
     } else {
-        on_error(@"Unable to mount developer disk image. (%x)", result);
+		on_error(@"Unable to mount developer disk image. Error %x: %s", result, get_error_message(result));
     }
 
     CFRelease(image_path);
@@ -1219,7 +1219,7 @@ void show_version() {
 }
 
 int main(int argc, char *argv[]) {
-#if defined(DEBUG) && 1
+#if defined(DEBUG) && 0
 	debug_error_table();
 	return 1;
 #endif

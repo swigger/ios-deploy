@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #include "script.h"
+#include "zlib.h"
 
 #define LLDB_CMDS_PATH @"/tmp/ios-deploy/fruitstrap-lldb-prep-cmds-%u"
 
@@ -19,6 +20,38 @@ connect\n\
 
 struct script_options g_scopt;
 
+
+CFMutableDataRef inflate_data(const void * data, size_t len)
+{
+#define BUFSIZE 4096
+	Byte outbuf[BUFSIZE];
+	z_stream zs;
+	memset(&zs, 0, sizeof(zs));
+	int err = inflateInit2(&zs, -MAX_WBITS);
+	if (err != Z_OK) return NULL;
+	CFMutableDataRef dout = CFDataCreateMutable(kCFAllocatorDefault, 0);
+	zs.next_in = (Byte*)data;
+	zs.avail_in = (uInt) len;
+	for (;zs.avail_in;)
+	{
+		zs.next_out  = outbuf;
+		zs.avail_out = sizeof(outbuf);
+		err = inflate(&zs, Z_NO_FLUSH);
+		if (err == Z_STREAM_END || err == Z_OK)
+		{
+			CFDataAppendBytes(dout, (unsigned char*)outbuf, BUFSIZE - zs.avail_out);
+			if (err == Z_STREAM_END) break;
+		}
+		else
+		{
+			on_error(@"zlib error %d", err);
+			break;
+		}
+	}
+	inflateEnd(&zs);
+	return dout;
+}
+
 /*
  * Some things do not seem to work when using the normal commands like process connect/launch, so we invoke them
  * through the python interface. Also, Launch () doesn't seem to work when ran from init_module (), so we add
@@ -28,9 +61,13 @@ struct script_options g_scopt;
 static CFMutableStringRef lldb_fruitstrap_module()
 {
 	size_t len = sizeof(script_py);
-	return NULL;
+	CFMutableDataRef dd = inflate_data(script_py+10, len-10);
+	CFStringRef s0 = CFStringCreateWithBytes(kCFAllocatorDefault, CFDataGetBytePtr(dd), CFDataGetLength(dd), kCFStringEncodingUTF8, false);
+	CFMutableStringRef s1 = CFStringCreateMutableCopy(kCFAllocatorDefault, 0, s0);
+	CFRelease(dd);
+	CFRelease(s0);
+	return s1;
 }
-
 
 CFStringRef copy_modules_search_paths_pairs(CFStringRef symbols_path, CFStringRef disk_container, CFStringRef device_container_private, CFStringRef device_container_noprivate )
 {
@@ -113,10 +150,9 @@ void write_lldb_prep_cmds(AMDeviceRef device, CFURLRef disk_app_url)
 	range.length = CFStringGetLength(cmds);
 	CFRelease(search_paths_pairs);
 	
-	
 	NSString* python_command = [NSString stringWithFormat:@"fruitstrap_%u", (uint32_t)getpid()];
-	NSString* python_file_path = [NSString stringWithFormat:@"/tmp/ios-deploy/fruitstrap_%@.py", python_command];
-	mkdirp(python_file_path);
+	NSString* python_file_path = [NSString stringWithFormat:@"/tmp/ios-deploy/%@.py", python_command];
+	mkdirp(@"/tmp/ios-deploy/");
 	
 	CFStringFindAndReplace(cmds, CFSTR("{python_command}"), (CFStringRef)python_command, range, 0);
 	range.length = CFStringGetLength(cmds);
@@ -135,6 +171,8 @@ void write_lldb_prep_cmds(AMDeviceRef device, CFURLRef disk_app_url)
 	fout = fopen([python_file_path UTF8String], "w");
 	fwrite(CFDataGetBytePtr(pmodule_data), 1, CFDataGetLength(pmodule_data), fout);
 	fclose(fout);
+	
+	g_scopt.lldb_cmd_path = prep_cmds_path;
 	
 	CFRelease(cmds);
 	CFRelease(symbols_path);

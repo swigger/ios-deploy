@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		798C5AD321899DBF00DC39D5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 798C5AD221899DBF00DC39D5 /* Foundation.framework */; };
+		798C5AD521899DCC00DC39D5 /* MobileDevice.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 798C5AD421899DCC00DC39D5 /* MobileDevice.framework */; };
 		79978FC821899C120016EC04 /* script.m in Sources */ = {isa = PBXBuildFile; fileRef = 79978FC321899C120016EC04 /* script.m */; };
 		79978FC921899C120016EC04 /* common.m in Sources */ = {isa = PBXBuildFile; fileRef = 79978FC421899C120016EC04 /* common.m */; };
 		79978FCA21899C120016EC04 /* errors.m in Sources */ = {isa = PBXBuildFile; fileRef = 79978FC521899C120016EC04 /* errors.m */; };
-		79978FCB21899C120016EC04 /* ios-deploy.m in Sources */ = {isa = PBXBuildFile; fileRef = 79978FC721899C120016EC04 /* ios-deploy.m */; };
+		79978FCB21899C120016EC04 /* ios-deploy.m in Sources */ = {isa = PBXBuildFile; fileRef = 79978FC721899C120016EC04 /* ios-deploy.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,6 +28,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		798C5AD221899DBF00DC39D5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		798C5AD421899DCC00DC39D5 /* MobileDevice.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileDevice.framework; path = ../../../../../System/Library/PrivateFrameworks/MobileDevice.framework; sourceTree = "<group>"; };
 		79978FB621899BBF0016EC04 /* ios-deploy */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "ios-deploy"; sourceTree = BUILT_PRODUCTS_DIR; };
 		79978FC021899C120016EC04 /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
 		79978FC121899C120016EC04 /* lldb.py.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lldb.py.h; sourceTree = "<group>"; };
@@ -43,18 +47,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				798C5AD321899DBF00DC39D5 /* Foundation.framework in Frameworks */,
+				798C5AD521899DCC00DC39D5 /* MobileDevice.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		798C5AD121899DBF00DC39D5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				798C5AD421899DCC00DC39D5 /* MobileDevice.framework */,
+				798C5AD221899DBF00DC39D5 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		79978FAD21899BBF0016EC04 = {
 			isa = PBXGroup;
 			children = (
 				79978FCC21899C280016EC04 /* scripts */,
 				79978FB821899BBF0016EC04 /* ios-deploy */,
 				79978FB721899BBF0016EC04 /* Products */,
+				798C5AD121899DBF00DC39D5 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -96,6 +112,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 79978FBD21899BBF0016EC04 /* Build configuration list for PBXNativeTarget "ios-deploy" */;
 			buildPhases = (
+				798C5AD621899E0A00DC39D5 /* ShellScript */,
 				79978FB221899BBF0016EC04 /* Sources */,
 				79978FB321899BBF0016EC04 /* Frameworks */,
 				79978FB421899BBF0016EC04 /* CopyFiles */,
@@ -139,6 +156,26 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		798C5AD621899E0A00DC39D5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"const unsigned char script_py[] = {\" > ios-deploy/lldb.py.h\n(echo \"#AUTO-GENERATED - DO NOT MODIFY\" ; cat scripts/lldb.py) | gzip -9  | xxd -i  >> ios-deploy/lldb.py.h\necho \"};\" >> ios-deploy/lldb.py.h\n\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		79978FB221899BBF0016EC04 /* Sources */ = {
@@ -272,6 +309,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4W28J954A6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYSTEM_FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
+				);
 			};
 			name = Debug;
 		};
@@ -281,6 +322,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4W28J954A6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYSTEM_FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
+				);
 			};
 			name = Release;
 		};

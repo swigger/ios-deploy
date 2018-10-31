@@ -9,7 +9,7 @@ listener = None
 def connect_command(debugger, command, result, internal_dict):
     # These two are passed in by the script which loads us
     connect_url = internal_dict['fruitstrap_connect_url']
-	print "connecting", connect_url
+    print "connecting", connect_url
     error = lldb.SBError()
     
     # We create a new listener here and will use it for both target and the process.
