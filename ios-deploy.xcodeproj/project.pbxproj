@@ -9,7 +9,8 @@
 /* Begin PBXBuildFile section */
 		798C5AD321899DBF00DC39D5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 798C5AD221899DBF00DC39D5 /* Foundation.framework */; };
 		798C5AD521899DCC00DC39D5 /* MobileDevice.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 798C5AD421899DCC00DC39D5 /* MobileDevice.framework */; };
-		79978FC821899C120016EC04 /* script.m in Sources */ = {isa = PBXBuildFile; fileRef = 79978FC321899C120016EC04 /* script.m */; };
+		798C5AD92189C3C700DC39D5 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 798C5AD82189C3C700DC39D5 /* libz.tbd */; };
+		79978FC821899C120016EC04 /* script.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79978FC321899C120016EC04 /* script.mm */; };
 		79978FC921899C120016EC04 /* common.m in Sources */ = {isa = PBXBuildFile; fileRef = 79978FC421899C120016EC04 /* common.m */; };
 		79978FCA21899C120016EC04 /* errors.m in Sources */ = {isa = PBXBuildFile; fileRef = 79978FC521899C120016EC04 /* errors.m */; };
 		79978FCB21899C120016EC04 /* ios-deploy.m in Sources */ = {isa = PBXBuildFile; fileRef = 79978FC721899C120016EC04 /* ios-deploy.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -30,16 +31,17 @@
 /* Begin PBXFileReference section */
 		798C5AD221899DBF00DC39D5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		798C5AD421899DCC00DC39D5 /* MobileDevice.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileDevice.framework; path = ../../../../../System/Library/PrivateFrameworks/MobileDevice.framework; sourceTree = "<group>"; };
+		798C5AD72189B7B900DC39D5 /* ios_lldb.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = ios_lldb.py; sourceTree = "<group>"; };
+		798C5AD82189C3C700DC39D5 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		79978FB621899BBF0016EC04 /* ios-deploy */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "ios-deploy"; sourceTree = BUILT_PRODUCTS_DIR; };
 		79978FC021899C120016EC04 /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
 		79978FC121899C120016EC04 /* lldb.py.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lldb.py.h; sourceTree = "<group>"; };
 		79978FC221899C120016EC04 /* MobileDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileDevice.h; sourceTree = "<group>"; };
-		79978FC321899C120016EC04 /* script.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = script.m; sourceTree = "<group>"; };
+		79978FC321899C120016EC04 /* script.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = script.mm; sourceTree = "<group>"; };
 		79978FC421899C120016EC04 /* common.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = common.m; sourceTree = "<group>"; };
 		79978FC521899C120016EC04 /* errors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = errors.m; sourceTree = "<group>"; };
 		79978FC621899C120016EC04 /* script.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = script.h; sourceTree = "<group>"; };
 		79978FC721899C120016EC04 /* ios-deploy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ios-deploy.m"; sourceTree = "<group>"; };
-		79978FCE21899C280016EC04 /* lldb.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = lldb.py; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				798C5AD92189C3C700DC39D5 /* libz.tbd in Frameworks */,
 				798C5AD321899DBF00DC39D5 /* Foundation.framework in Frameworks */,
 				798C5AD521899DCC00DC39D5 /* MobileDevice.framework in Frameworks */,
 			);
@@ -58,6 +61,7 @@
 		798C5AD121899DBF00DC39D5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				798C5AD82189C3C700DC39D5 /* libz.tbd */,
 				798C5AD421899DCC00DC39D5 /* MobileDevice.framework */,
 				798C5AD221899DBF00DC39D5 /* Foundation.framework */,
 			);
@@ -92,7 +96,7 @@
 				79978FC121899C120016EC04 /* lldb.py.h */,
 				79978FC221899C120016EC04 /* MobileDevice.h */,
 				79978FC621899C120016EC04 /* script.h */,
-				79978FC321899C120016EC04 /* script.m */,
+				79978FC321899C120016EC04 /* script.mm */,
 			);
 			path = "ios-deploy";
 			sourceTree = "<group>";
@@ -100,7 +104,7 @@
 		79978FCC21899C280016EC04 /* scripts */ = {
 			isa = PBXGroup;
 			children = (
-				79978FCE21899C280016EC04 /* lldb.py */,
+				798C5AD72189B7B900DC39D5 /* ios_lldb.py */,
 			);
 			path = scripts;
 			sourceTree = "<group>";
@@ -173,7 +177,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"const unsigned char script_py[] = {\" > ios-deploy/lldb.py.h\n(echo \"#AUTO-GENERATED - DO NOT MODIFY\" ; cat scripts/lldb.py) | gzip -9  | xxd -i  >> ios-deploy/lldb.py.h\necho \"};\" >> ios-deploy/lldb.py.h\n\n";
+			shellScript = "echo \"const unsigned char script_py[] = {\" > ios-deploy/lldb.py.h\ncat scripts/ios_lldb.py | gzip -9  | xxd -i  >> ios-deploy/lldb.py.h\necho \"};\" >> ios-deploy/lldb.py.h\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -184,7 +188,7 @@
 			files = (
 				79978FCB21899C120016EC04 /* ios-deploy.m in Sources */,
 				79978FCA21899C120016EC04 /* errors.m in Sources */,
-				79978FC821899C120016EC04 /* script.m in Sources */,
+				79978FC821899C120016EC04 /* script.mm in Sources */,
 				79978FC921899C120016EC04 /* common.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

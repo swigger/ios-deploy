@@ -1,5 +1,8 @@
 #pragma once
 #include "MobileDevice.h"
+#ifdef __cplusplus
+extern "C"{
+#endif
 
 typedef struct am_device * AMDeviceRef;
 mach_error_t AMDeviceSecureStartService(struct am_device *device, CFStringRef service_name, unsigned int *unknown, service_conn_t *handle);
@@ -65,3 +68,7 @@ BOOL mkdirp(NSString* path);
 CFStringRef copy_device_support_path(AMDeviceRef device, CFStringRef suffix);
 CFStringRef copy_disk_app_identifier(CFURLRef disk_app_url);
 CFURLRef copy_device_app_url(AMDeviceRef device, CFStringRef identifier);
+
+#ifdef __cplusplus
+}
+#endif

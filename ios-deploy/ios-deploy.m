@@ -395,7 +395,8 @@ void setup_lldb(AMDeviceRef device, CFURLRef url) {
 
     mount_developer_image(device);      // put debugserver on the device
     start_remote_debug_server(device);  // start debugserver
-    if (!debugserver_only)
+
+	if (!debugserver_only)
         write_lldb_prep_cmds(device, url);   // dump the necessary lldb commands into a file
 
     CFRelease(url);
