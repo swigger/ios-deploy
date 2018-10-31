@@ -1,0 +1,10 @@
+build/
+_Frameworks/
+.DS_Store
+*~
+scripts/lldb.pyc
+ios-deploy/lldb.py.h
+.*.swp
+
+xcuserdata/
+xcshareddata/
