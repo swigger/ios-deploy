@@ -221,7 +221,8 @@ static void on_conn_close(int who)
 	if (closed == 3)
 	{
 		//both 2bits set. server & conn closed. quit.
-		exit(0);
+		//kill(0, SIGTERM);
+		//exit(0);
 	}
 }
 
@@ -348,16 +349,18 @@ int kill_ptree(pid_t root, int signum) {
 
 void killed(int signum) {
     // SIGKILL needed to kill lldb, probably a better way to do this.
+	fprintf(stderr, "killed!!!\n");
     kill(0, SIGKILL);
-    _exit(0);
+    exit(0);
 }
 
 void lldb_finished_handler(int signum)
 {
+	fprintf(stderr, "lldb finished!!!\n");
     int status = 0;
     if (waitpid(child, &status, 0) == -1)
         perror("waitpid failed");
-    _exit(WEXITSTATUS(status));
+    exit(WEXITSTATUS(status));
 }
 
 void bring_process_to_foreground() {
@@ -444,10 +447,11 @@ void launch_debugger(AMDeviceRef device, CFURLRef url) {
         close(pfd[0]);
         close(pfd[1]);
 
+		fprintf(stderr, "\nCHILD: lldb finished with status %d\n", status);
         // Notify parent we're exiting
         kill(parent, SIGLLDB);
         // Pass lldb exit code
-        _exit(WEXITSTATUS(status));
+        exit(WEXITSTATUS(status));
     } else if (pid > 0) {
         child = pid;
     } else {
@@ -478,7 +482,7 @@ void launch_debugger_and_exit(AMDeviceRef device, CFURLRef url) {
         // Notify parent we're exiting
         kill(parent, SIGLLDB);
         // Pass lldb exit code
-        _exit(WEXITSTATUS(status));
+        exit(WEXITSTATUS(status));
     } else if (pid > 0) {
         child = pid;
         NSLogVerbose(@"Waiting for child [Child: %d][Parent: %d]\n", child, parent);
