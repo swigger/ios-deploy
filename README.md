@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/phonegap/ios-deploy.svg?branch=master)](https://travis-ci.org/phonegap/ios-deploy)
-
 ios-deploy
 ==========
 Install and debug iOS apps from the command line. Designed to work on un-jailbroken devices.
@@ -10,52 +8,34 @@ Install and debug iOS apps from the command line. Designed to work on un-jailbro
 * You need to have a valid iOS Development certificate installed.
 * Xcode 7 or greater should be installed (**NOT** Command Line Tools!)
 
-## Roadmap
+## Development about this fork
 
-See our [milestones](https://github.com/phonegap/ios-deploy/milestones).
-	
-## Development
+This project is forked from [ios-control/ios-deploy](https://github.com/ios-control/ios-deploy). With some modifications. The original code is too ugly to read, as those guys put all the stuff in one file. I have split some of them out. 
 
-The 1.x branch has been archived (renamed for now), all development is to be on the master branch for simplicity, since the planned 2.x development (break out commands into their own files) has been abandoned for now.
+One key point is I have changed the py file. Now it's stored at `/tmp/ios-deploy/ios_deploy.py`, and keeps unchanged between sessions. So you can edit it to help make it greater. The file is only rebuilt when it's missing. However, please backup your changes. 
+
+Another keypoint is I have stripped node related stuff. This is a command line tool writen by objc/c/cpp, why I should install it by npm? I'd like to build and install it myself.
+
+Honestly, I wrote some other stuff to work with `--helper_sript`, but won't open source them recently. This implies stop-at-entry & disable-aslr, so it's much more easy to find bugs and Do hacks.
+
+呃。。。英文写得跟狗屎一样，希望有人懂就行，没人看也没关系。
 
 ## Installation
 =======
-
-ios-deploy installation is made simple using the node.js package manager.  If you use [Homebrew](http://brew.sh/), install [node.js](https://nodejs.org):
-
-```
-brew install node
-```
-
-Now install ios-deploy with the [node.js](https://nodejs.org) package manager:
-
-```
-npm install -g ios-deploy
-```
-
 To build from source:
 
 ```
 xcodebuild
 ```
+This will build `ios-deploy` into the `build/Release` folder. Find it yourself.
 
-This will build `ios-deploy` into the `build/Release` folder.
 
-## Testing
-
-Run:
+Or, much more simpler, just goto makedir and:
 
 ```
-npm install && npm test
+make
+make install
 ```
-
-### OS X 10.11 El Capitan or greater
-
-If you are *not* using a node version manager like [nvm](https://github.com/creationix/nvm) or [n](https://github.com/tj/n), you may have to do either of these three things below when under El Capitan:
-
-1. Add the `--unsafe-perm=true` flag  when installing ios-deploy
-2. Add the `--allow-root` flag  when installing ios-deploy
-3. Ensure the `nobody` user has write access to `/usr/local/lib/node_modules/ios-deploy/ios-deploy`
 
 ## Usage
 
@@ -87,6 +67,9 @@ If you are *not* using a node version manager like [nvm](https://github.com/crea
         -B, --list_bundle_id         list bundle_id 
         -W, --no-wifi                ignore wifi devices
         --detect_deadlocks <sec>     start printing backtraces for all threads periodically after specific amount of seconds
+        --helper_script xxx.py       load another script file to help debugging. 
+        
+
 
 ## Examples
 
@@ -130,13 +113,10 @@ The commands below assume that you have an app called `my.app` with bundle id `b
     
     // list all bundle ids of all apps on your device
     ios-deploy --list_bundle_id
+    
+    // my favorite go debugging:
+    ios-deploy -dmb dir/my.app --helper_script dbgman.py
 
-## Demo
-
-The included demo.app represents the minimum required to get code running on iOS.
-
-* `make demo.app` will generate the demo.app executable. If it doesn't compile, modify `IOS_SDK_VERSION` in the Makefile.
-* `make debug` will install demo.app and launch a LLDB session.
 
 ## Notes
 * `--detect_deadlocks` can help to identify an exact state of application's threads in case of a deadlock. It works like this: The user specifies the amount of time ios-deploy runs the app as usual. When the timeout is elapsed ios-deploy starts to print call-stacks of all threads every 5 seconds and the app keeps running. Comparing threads' call-stacks between each other helps to identify the threads which were stuck.
