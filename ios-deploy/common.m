@@ -33,7 +33,7 @@ int g_log_level = 0;
 static void __NSLogOut(NSString* format, va_list valist)
 {
 	NSString* str = [[NSString alloc] initWithFormat:format arguments:valist];
-	fprintf(stdout, "%s\n", [str UTF8String]);
+	fprintf(stderr, "%s\n", [str UTF8String]);
 }
 
 void NSLogOut(NSString* format, ...) {

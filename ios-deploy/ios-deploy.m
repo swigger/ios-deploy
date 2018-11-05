@@ -185,7 +185,7 @@ mach_error_t transfer_callback(CFDictionaryRef dict, int arg) {
         CFStringRef path = CFDictionaryGetValue(dict, CFSTR("Path"));
 
         if ((last_path == NULL || !CFEqual(path, last_path)) && !CFStringHasSuffix(path, CFSTR(".ipa"))) {
-            NSLogOut(@"[%3d%%] Copying %@ to device", percent / 2, path);
+            NSLogVerbose(@"[%3d%%] Copying %@ to device", percent / 2, path);
         }
 
         if (last_path != NULL) {
@@ -202,7 +202,7 @@ mach_error_t install_callback(CFDictionaryRef dict, int arg) {
     CFStringRef status = CFDictionaryGetValue(dict, CFSTR("Status"));
     CFNumberGetValue(CFDictionaryGetValue(dict, CFSTR("PercentComplete")), kCFNumberSInt32Type, &percent);
 
-    NSLogOut(@"[%3d%%] %@", (percent / 2) + 50, status);
+    NSLogVerbose(@"[%3d%%] %@", (percent / 2) + 50, status);
     return 0;
 }
 
