@@ -17,6 +17,7 @@
 
 #include "common.h"
 #import "script.h"
+#import "checksign.h"
 
 #define LLDB_SHELL @"lldb -s %@"
 /*
@@ -43,6 +44,7 @@ char *app_path = NULL;
 char *device_id = NULL;
 char *list_root = NULL;
 int _timeout = 0;
+bool skip_check = false;
 
 CFStringRef last_path = NULL;
 service_conn_t gdbfd;
@@ -1060,6 +1062,12 @@ void handle_device(AMDeviceRef device) {
 
     if(install) {
         NSLogOut(@"------ Install phase ------");
+		if (!skip_check && !check_sign(found_device_id, path))
+		{
+			NSLogOut(@"------ Check Signature failed. abort. ------");
+			exit(1);
+		}
+		
         NSLogOut(@"[  0%%] Found %@ connected through %@, beginning install", device_full_name, device_interface_name);
 
         AMDeviceConnect(device);
@@ -1218,6 +1226,7 @@ void usage(const char* app) {
         "  -e, --exists                 check if the app with given bundle_id is installed or not \n"
         "  -B, --list_bundle_id         list bundle_id \n"
         "  -W, --no-wifi                ignore wifi devices\n"
+		"  -S, --skip-check             skip sign-check before installation.\n"
         "  --detect_deadlocks <sec>     start printing backtraces for all threads periodically after specific amount of seconds\n"
 		"  --helper_script <path.py>    a helper script to auto debugging after launch. implies stop-at-entry disable-aslr\n";
 	fprintf(stderr, usage_, app);
@@ -1267,13 +1276,14 @@ int main(int argc, char *argv[]) {
         { "exists", no_argument, NULL, 'e'},
         { "list_bundle_id", no_argument, NULL, 'B'},
         { "no-wifi", no_argument, NULL, 'W'},
+		{ "skip-check", no_argument, NULL, 'S'},
         { "detect_deadlocks", required_argument, NULL, 1000 },
 		{ "helper_script", required_argument, NULL, 2000},
         { NULL, 0, NULL, 0 },
     };
     int ch;
 
-    while ((ch = getopt_long(argc, argv, "VmcdvunNrILeD:R:i:b:a:t:g:x:p:1:2:o:l::w::9::B::W", longopts, NULL)) != -1)
+    while ((ch = getopt_long(argc, argv, "SVmcdvunNrILeD:R:i:b:a:t:g:x:p:1:2:o:l::w::9::B::W", longopts, NULL)) != -1)
     {
         switch (ch) {
         case 'm':
@@ -1376,6 +1386,9 @@ int main(int argc, char *argv[]) {
         case 'W':
             no_wifi = true;
             break;
+		case 'S':
+			skip_check = true;
+			break;
         case 1000:
             g_scopt.detectDeadlockTimeout = atoi(optarg);
             break;

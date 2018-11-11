@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7973D887219826FB00E19AC9 /* checksign.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7973D886219826FB00E19AC9 /* checksign.mm */; };
 		798C5AD321899DBF00DC39D5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 798C5AD221899DBF00DC39D5 /* Foundation.framework */; };
 		798C5AD521899DCC00DC39D5 /* MobileDevice.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 798C5AD421899DCC00DC39D5 /* MobileDevice.framework */; };
 		798C5AD92189C3C700DC39D5 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 798C5AD82189C3C700DC39D5 /* libz.tbd */; };
@@ -29,6 +30,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7973D885219826FB00E19AC9 /* checksign.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = checksign.h; sourceTree = "<group>"; };
+		7973D886219826FB00E19AC9 /* checksign.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = checksign.mm; sourceTree = "<group>"; };
 		798C5AD221899DBF00DC39D5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		798C5AD421899DCC00DC39D5 /* MobileDevice.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileDevice.framework; path = ../../../../../System/Library/PrivateFrameworks/MobileDevice.framework; sourceTree = "<group>"; };
 		798C5AD72189B7B900DC39D5 /* ios_lldb.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = ios_lldb.py; sourceTree = "<group>"; };
@@ -89,6 +92,8 @@
 		79978FB821899BBF0016EC04 /* ios-deploy */ = {
 			isa = PBXGroup;
 			children = (
+				7973D885219826FB00E19AC9 /* checksign.h */,
+				7973D886219826FB00E19AC9 /* checksign.mm */,
 				79978FC021899C120016EC04 /* common.h */,
 				79978FC421899C120016EC04 /* common.m */,
 				79978FC521899C120016EC04 /* errors.m */,
@@ -190,6 +195,7 @@
 				79978FCA21899C120016EC04 /* errors.m in Sources */,
 				79978FC821899C120016EC04 /* script.mm in Sources */,
 				79978FC921899C120016EC04 /* common.m in Sources */,
+				7973D887219826FB00E19AC9 /* checksign.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
