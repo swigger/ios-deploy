@@ -86,21 +86,24 @@ bool check_sign(const char* devname, const string & plist)
 		fprintf(stderr, "ERROR: the signed provision file has expired.\n");
 		return false;
 	}
-	
-	NSArray * devs = [dict objectForKey:@"ProvisionedDevices"];
-	bool devok = false;
-	for (NSString * d in devs)
+	bool ball = [[dict objectForKey:@"ProvisionsAllDevices"] boolValue];
+	if (!ball)
 	{
-		if (strcasecmp(devname, [d UTF8String]) == 0)
+		NSArray * devs = [dict objectForKey:@"ProvisionedDevices"];
+		bool devok = false;
+		for (NSString * d in devs)
 		{
-			devok = true;
-			break;
+			if (strcasecmp(devname, [d UTF8String]) == 0)
+			{
+				devok = true;
+				break;
+			}
 		}
-	}
-	if (!devok)
-	{
-		fprintf(stderr, "ERROR: device %s is not in ProvisionedDevices.\n", devname);
-		return false;
+		if (!devok)
+		{
+			fprintf(stderr, "ERROR: device %s is not in ProvisionedDevices.\n", devname);
+			return false;
+		}
 	}
 	
 	return true;
