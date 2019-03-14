@@ -274,8 +274,18 @@ void fdvendor_callback(CFSocketRef s, CFSocketCallBackType callbackType, CFDataR
 }
 
 void start_remote_debug_server(AMDeviceRef device) {
-
-    check_error(AMDeviceStartService(device, CFSTR("com.apple.debugserver"), &gdbfd, NULL));
+	//trying to start the hacked service 1 .
+	int err = AMDeviceStartService(device, CFSTR("net.swigger.dbgsrv64"), &gdbfd, NULL);
+	if (err == 0 && gdbfd > 0)
+	{
+		fprintf(stderr, "\x1b[1;32mNOTE: using service net.swigger.dbgsrv64\x1b[0m\n");
+	}
+	else
+	{
+		const char* msg = get_error_message(err);
+		fprintf(stderr, "start net.swigger.dbgsrv64 error:%d %s\n", err, msg);
+		check_error(AMDeviceStartService(device, CFSTR("com.apple.debugserver"), &gdbfd, NULL));
+	}
     assert(gdbfd > 0);
 
     /*
