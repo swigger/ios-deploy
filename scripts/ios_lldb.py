@@ -46,7 +46,7 @@ class DeployDbg(object):
         self._wait_state(lldb.eStateStopped, lldb.eStateRunning, lldb.eStateStepping)
 
     def connect(self, debugger):
-        print "connecting", self.connect_url
+        print("connecting", self.connect_url)
         error = lldb.SBError()
 
         # We create a new listener here and will use it for both target and the process.
@@ -62,7 +62,7 @@ class DeployDbg(object):
         )
 
         process = lldb.target.ConnectRemote(self.listener, self.connect_url, None, error)
-        print "state::::", process.GetState()
+        print("state::::", process.GetState())
         self._wait_state(lldb.eStateConnected, lldb.eStateUnloaded, lldb.eStateInvalid)
         time.sleep(0.05)
 
@@ -87,10 +87,10 @@ class DeployDbg(object):
         lldb.target.Launch(launchInfo, error)
         lockedstr = ': Locked'
         if lockedstr in str(error):
-            print '\\nDevice Locked\\n'
+            print('\\nDevice Locked\\n')
             sys.exit(254)
         else:
-            print "Start Status:", str(error)
+            print("Start Status:", str(error))
         # it seems status not sync-ed without this sleep
         time.sleep(0.3)
 
